@@ -1,0 +1,131 @@
+Query:-1
+CREATE DATABASE StudentCourseDB;
+Query:-2
+USE StudentCourseDB;
+
+Query:-3
+CREATE TABLE Student (
+StudentID INT PRIMARY KEY AUTO_INCREMENT,
+Name VARCHAR(100) NOT NULL,
+Email VARCHAR(100) UNIQUE NOT NULL,
+Age INT,
+Address VARCHAR(255)
+);
+
+Query:-4
+CREATE TABLE Instructor (
+InstructorID INT PRIMARY KEY AUTO_INCREMENT,
+Name VARCHAR(100) NOT NULL,
+Email VARCHAR(100) UNIQUE NOT NULL,
+Department VARCHAR(100)
+);
+
+Query:-5
+CREATE TABLE Course (
+CourseID INT PRIMARY KEY AUTO_INCREMENT,
+CourseName VARCHAR(100) NOT NULL,
+Credits INT CHECK (Credits > 0),
+InstructorID INT,
+FOREIGN KEY (InstructorID) REFERENCES Instructor(InstructorID)
+);
+
+Query:-6
+CREATE TABLE Enrollment (
+EnrollmentID INT PRIMARY KEY AUTO_INCREMENT,
+StudentID INT,
+CourseID INT,
+EnrollmentDate DATE,
+FOREIGN KEY (StudentID) REFERENCES Student(StudentID),
+FOREIGN KEY (CourseID) REFERENCES Course(CourseID)
+);
+
+Query:-7
+INSERT INTO Student (Name, Email, Age, Address)
+VALUES 
+('Rahul Sharma', 'rahul.sharma@example.com', 21, 'Pune, India'),
+('Priya Mehta', 'priya.mehta@example.com', 22, 'Mumbai, India'),
+('Amit Verma', 'amit.verma@example.com', 23, 'Delhi, India');
+
+Query:-8
+INSERT INTO Instructor (Name, Email, Department)
+VALUES 
+('Dr. Anil Kumar', 'anil.kumar@example.com', 'Computer Science'),
+('Dr. Sneha Patil', 'sneha.patil@example.com', 'Mathematics');
+
+Query:-9
+INSERT INTO Course (CourseName, Credits, InstructorID)
+VALUES 
+('Database Systems', 4, 1),
+('Linear Algebra', 3, 2),
+('Operating Systems', 5, 1);
+
+Query:-10
+INSERT INTO Enrollment (StudentID, CourseID, EnrollmentDate)
+VALUES 
+(1, 1, '2026-05-01'),
+(2, 2, '2026-05-02'),
+(3, 1, '2026-05-03'),
+(1, 3, '2026-05-04');
+
+Query:-11
+SELECT StudentID, Name, Age, Email
+FROM Student
+WHERE Age > 21;
+
+Query:-12
+SELECT CourseID, CourseName, Credits
+FROM Course
+WHERE InstructorID = (
+SELECT InstructorID FROM Instructor WHERE Name = 'Dr. Anil Kumar'
+);
+
+Query:-13
+SELECT StudentID, Name, Email
+FROM Student
+ORDER BY Name ASC;
+
+Query:-14
+SELECT CourseID, CourseName, Credits
+FROM Course
+ORDER BY Credits DESC;
+
+Query:-15
+SELECT c.CourseName, COUNT(e.StudentID) AS TotalStudents
+FROM Course c
+LEFT JOIN Enrollment e ON c.CourseID = e.CourseID
+GROUP BY c.CourseName;
+
+Query:-16
+SELECT c.CourseName, AVG(s.Age) AS AverageAge
+FROM Enrollment e
+JOIN Student s ON e.StudentID = s.StudentID
+JOIN Course c ON e.CourseID = c.CourseID
+GROUP BY c.CourseName;
+
+Query:-17
+SELECT Name, Email
+FROM Student
+WHERE StudentID IN (
+SELECT StudentID
+FROM Enrollment
+WHERE CourseID IN (
+SELECT CourseID
+FROM Enrollment
+GROUP BY CourseID
+HAVING COUNT(StudentID) > 1
+)
+);
+
+Query:-18
+SELECT Name, Department
+FROM Instructor
+WHERE InstructorID IN (
+SELECT InstructorID
+FROM Course
+WHERE CourseID IN (
+SELECT CourseID
+FROM Enrollment e
+JOIN Student s ON e.StudentID = s.StudentID
+WHERE s.Age > 21
+)
+);
