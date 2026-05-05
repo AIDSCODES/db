@@ -1,0 +1,44 @@
+Query no :-1
+CREATE TABLE Employees (
+EmpID INT PRIMARY KEY AUTO_INCREMENT,
+Name VARCHAR(100),
+Department VARCHAR(100),
+Salary DECIMAL(10,2)
+);
+
+Query no :-2
+INSERT INTO Employees (Name, Department, Salary) VALUES
+('Rahul Sharma', 'IT', 50000),
+('Priya Mehta', 'HR', 40000),
+('Amit Verma', 'IT', 60000);
+
+Query no :-3
+DELIMITER $$
+
+CREATE PROCEDURE Increment_IT_Salary()
+BEGIN
+DECLARE done INT DEFAULT 0;
+DECLARE v_EmpID INT;
+DECLARE v_Salary DECIMAL(10,2);
+DECLARE cur CURSOR FOR
+SELECT EmpID, Salary FROM Employees WHERE Department = 'IT';
+DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
+OPEN cur;
+read_loop: LOOP
+FETCH cur INTO v_EmpID, v_Salary;
+IF done = 1 THEN
+LEAVE read_loop;
+END IF;
+UPDATE Employees
+SET Salary = v_Salary * 1.10
+WHERE EmpID = v_EmpID;
+END LOOP;
+CLOSE cur;
+END$$
+DELIMITER ;
+
+Query no :-4
+CALL Increment_IT_Salary();
+
+Query no :-5
+SELECT * FROM Employees;
