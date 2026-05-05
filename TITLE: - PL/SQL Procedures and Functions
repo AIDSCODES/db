@@ -1,0 +1,93 @@
+Query:-1
+CREATE TABLE customer(
+C_id INT PRIMARY KEY,
+NAME VARCHAR(50),
+AGE INT
+);
+
+Query:-2
+CREATE TABLE product(
+P_ID INT PRIMARY KEY,
+NAME VARCHAR(50),
+QNT INT
+);
+
+Query:-3
+CREATE TABLE orders(
+O_ID INT PRIMARY KEY,
+C_ID INT,
+P_ID INT
+);
+
+Query:-4
+CREATE TABLE order_detail(
+O_D_ID INT PRIMARY KEY,
+O_ID INT,
+P_ID INT,
+C_ID INT,
+QNT INT
+);
+
+Query:-5
+DELIMITER //
+
+Query:-6
+CREATE PROCEDURE add_customer(IN c_id INT, IN name VARCHAR(50), IN age 
+INT)
+BEGIN
+INSERT INTO customer VALUES(c_id,name,age);
+END //
+
+Query:-7
+CREATE PROCEDURE add_product(IN p_id INT, IN p_name VARCHAR(50), IN 
+p_qnt INT) 
+BEGIN 
+INSERT INTO product VALUES(p_id,p_name,p_qnt);
+END //
+Query:-8
+CREATE PROCEDURE add_orders(IN o_id INT, IN c_id INT, IN p_id INT)
+BEGIN
+INSERT INTO orders VALUES(o_id,c_id,p_id);
+END //
+
+Query:-9
+CREATE PROCEDURE add_order_detail(IN od_id INT, IN o_id INT, IN p_id INT, IN 
+c_id INT, IN qnt INT)
+BEGIN
+INSERT INTO order_detail VALUES(od_id,o_id,p_id,c_id,qnt);
+END //
+
+Query:-10
+DELIMITER ; 
+
+Query:-11
+CALL add_customer(1,'Chaitanya',20); 
+CALL add_customer(2,'Om',25);
+SELECT * FROM customer;
+
+Query:-12
+CALL add_product(1,'Laptop',10); 
+CALL add_product(2,'Mouse',20);
+SELECT * FROM product;
+
+Query:-13
+CALL add_orders(101,1,1);
+CALL add_orders(102,2,2); 
+SELECT * FROM orders; 
+
+Query:-14
+CALL add_order_detail(1,101,1,1,10);
+CALL add_order_detail(2,102,2,2,20);
+DELIMITER // 
+
+Query:-15
+CREATE FUNCTION total_sales()
+RETURNS INT 
+DETERMINISTIC
+BEGIN
+DECLARE total INT;
+SELECT SUM(QNT) INTO total FROM order_detail;
+RETURN total;
+END //
+DELIMITER ; 
+SELECT total_sales(); 
