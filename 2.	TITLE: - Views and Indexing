@@ -1,0 +1,104 @@
+Query:-1
+CREATE DATABASE UniversityDB;
+
+Query:-2
+USE UniversityDB;
+
+Query:-3
+CREATE TABLE Student (
+StudentID INT PRIMARY KEY AUTO_INCREMENT,
+Name VARCHAR(100) NOT NULL,
+Email VARCHAR(100) UNIQUE NOT NULL,
+Age INT,
+Address VARCHAR(255)
+);
+
+Query:-4
+CREATE TABLE Instructor (
+InstructorID INT PRIMARY KEY AUTO_INCREMENT,
+Name VARCHAR(100) NOT NULL,
+Email VARCHAR(100) UNIQUE NOT NULL,
+Department VARCHAR(100)
+);
+
+Query:-5
+CREATE TABLE Course (
+CourseID INT PRIMARY KEY AUTO_INCREMENT,
+CourseName VARCHAR(100) NOT NULL,
+Credits INT CHECK (Credits > 0),
+InstructorID INT,
+FOREIGN KEY (InstructorID) REFERENCES Instructor(InstructorID)
+);
+
+Query:-6
+CREATE TABLE Enrollment (
+EnrollmentID INT PRIMARY KEY AUTO_INCREMENT,
+StudentID INT,
+CourseID INT,
+EnrollmentDate DATE,
+FOREIGN KEY (StudentID) REFERENCES Student(StudentID),
+FOREIGN KEY (CourseID) REFERENCES Course(CourseID)
+);
+
+Query:-7
+INSERT INTO Student (Name, Email, Age, Address)
+VALUES 
+('Rahul Sharma', 'rahul.sharma@example.com', 21, 'Pune, India'),
+('Priya Mehta', 'priya.mehta@example.com', 22, 'Mumbai, India');
+
+Query:-8
+INSERT INTO Instructor (Name, Email, Department)
+VALUES 
+('Dr. Anil Kumar', 'anil.kumar@example.com', 'Computer Science'),
+('Dr. Sneha Patil', 'sneha.patil@example.com', 'Mathematics');
+
+Query:-9
+INSERT INTO Course (CourseName, Credits, InstructorID)
+VALUES 
+('Database Systems', 4, 1),
+('Linear Algebra', 3, 2);
+
+Query:-10
+INSERT INTO Enrollment (StudentID, CourseID, EnrollmentDate)
+VALUES 
+(1, 1, '2026-05-01'),
+(2, 2, '2026-05-02');
+
+Query:-11
+CREATE VIEW StudentCourseDetails AS
+SELECT 
+s.StudentID,
+s.Name AS StudentName,
+s.Email AS StudentEmail,
+c.CourseID,
+c.CourseName,
+c.Credits,
+i.Name AS InstructorName,
+e.EnrollmentDate
+FROM Enrollment e
+JOIN Student s ON e.StudentID = s.StudentID
+JOIN Course c ON e.CourseID = c.CourseID
+JOIN Instructor i ON c.InstructorID = i.InstructorID;
+
+Query:-12
+CREATE VIEW CourseEnrollmentSummary AS
+SELECT 
+c.CourseID,
+c.CourseName,
+COUNT(e.StudentID) AS TotalStudents,
+i.Name AS InstructorName
+FROM Course c
+LEFT JOIN Enrollment e ON c.CourseID = e.CourseID
+JOIN Instructor i ON c.InstructorID = i.InstructorID
+GROUP BY c.CourseID, c.CourseName, i.Name;
+
+Query:-13
+UPDATE StudentCourseDetails
+SET StudentName = 'newemail@example.com'
+WHERE StudentID = 1;
+
+Query:-14
+CREATE INDEX idx_enrollment_student_course 
+ON Enrollment(StudentID, CourseID);
+
+
