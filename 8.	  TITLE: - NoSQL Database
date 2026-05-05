@@ -1,0 +1,22 @@
+Query no :-1
+use UniversityDB;
+db.createCollection("Users");
+
+Query no :-2
+db.Users.insertMany([
+    { UserID: 1, Name: "Rahul Sharma", Email: "rahul@example.com", Age: 21 },
+    { UserID: 2, Name: "Priya Mehta", Email: "priya@example.com", Age: 22 }
+]);
+
+Query no :-3
+db.Users.find();
+db.Users.find({ Age: { $gt: 21 } });
+
+Query no :-4
+db.Users.updateOne(
+    { UserID: 1 },
+    { $set: { Age: 23 } }
+);
+
+Query no :-5
+db.Users.deleteOne({ UserID: 2 });
