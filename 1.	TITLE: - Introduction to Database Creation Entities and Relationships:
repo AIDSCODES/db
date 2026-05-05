@@ -1,0 +1,44 @@
+Query no :-1
+CREATE DATABASE UNIVERSITY;
+
+Query no :-2
+USE UNIVERSITY;
+
+Query no :-3
+CREATE TABLE Student (
+StudentID INT PRIMARY KEY AUTO_INCREMENT,
+Name VARCHAR(100) NOT NULL,
+Email VARCHAR(100) UNIQUE NOT NULL,
+Age INT,
+Address VARCHAR(255)
+);
+
+Query no :-4
+DESC Student;
+
+Query no :-5
+CREATE TABLE Instructor (
+InstructorID INT PRIMARY KEY AUTO_INCREMENT,
+Name VARCHAR(100) NOT NULL,
+Email VARCHAR(100) UNIQUE NOT NULL,
+Department VARCHAR(100)
+);
+
+Query no :-6
+CREATE TABLE Course (
+CourseID INT PRIMARY KEY AUTO_INCREMENT,
+CourseName VARCHAR(100) NOT NULL,
+Credits INT CHECK (Credits > 0),
+InstructorID INT,
+FOREIGN KEY (InstructorID) REFERENCES Instructor(InstructorID)
+);
+
+Query no :-7
+CREATE TABLE Enrollment (
+EnrollmentID INT PRIMARY KEY AUTO_INCREMENT,
+StudentID INT,
+CourseID INT,
+EnrollmentDate DATE,
+FOREIGN KEY (StudentID) REFERENCES Student(StudentID),
+FOREIGN KEY (CourseID) REFERENCES Course(CourseID)
+);
