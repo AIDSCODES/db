@@ -1,0 +1,63 @@
+Query:-1
+CREATE DATABASE CustomerOrderDB;
+
+Query:-2
+USE CustomerOrderDB;
+
+Query:-3
+CREATE TABLE Customer (
+CustomerID INT PRIMARY KEY AUTO_INCREMENT,
+Name VARCHAR(100) NOT NULL,
+Email VARCHAR(100) UNIQUE NOT NULL
+);
+
+Query:-4
+CREATE TABLE Orders (
+OrderID INT PRIMARY KEY AUTO_INCREMENT,
+CustomerID INT,
+OrderDate DATE,
+Amount DECIMAL(10,2),
+FOREIGN KEY (CustomerID) REFERENCES Customer(CustomerID)
+);
+
+Query:-5
+INSERT INTO Customer (Name, Email) VALUES
+('Rahul Sharma', 'rahul@example.com'),
+('Priya Mehta', 'priya@example.com'),
+('Amit Verma', 'amit@example.com');
+
+Query:-6
+INSERT INTO Orders (CustomerID, OrderDate, Amount) VALUES
+(1, '2026-05-01', 1500.00),   
+(2, '2026-05-02', 2000.00),  
+(NULL, '2026-05-03', 500.00); 
+
+Query:-7
+SELECT c.CustomerID, c.Name, o.OrderID, o.OrderDate, o.Amount
+FROM Customer c
+INNER JOIN Orders o ON c.CustomerID = o.CustomerID;
+
+Query:-8
+SELECT c.CustomerID, c.Name, o.OrderID, o.OrderDate, o.Amount
+FROM Customer c
+LEFT JOIN Orders o ON c.CustomerID = o.CustomerID;
+
+Query:-9
+SELECT c.CustomerID, c.Name, o.OrderID, o.OrderDate, o.Amount
+FROM Customer c
+RIGHT JOIN Orders o ON c.CustomerID = o.CustomerID;
+
+Query:-10
+SELECT c.CustomerID, c.Name, o.OrderID, o.OrderDate, o.Amount
+FROM Customer c
+LEFT JOIN Orders o ON c.CustomerID = o.CustomerID
+UNION
+SELECT c.CustomerID, c.Name, o.OrderID, o.OrderDate, o.Amount
+FROM Customer c
+RIGHT JOIN Orders o ON c.CustomerID = o.CustomerID;
+
+Query:-11
+SELECT c.Name, SUM(o.Amount) AS TotalSpent
+FROM Customer c
+LEFT JOIN Orders o ON c.CustomerID = o.CustomerID
+GROUP BY c.Name;
